@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
-import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
 import PublicBooking from "./pages/PublicBooking";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -20,12 +19,15 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            {/* Rotas Públicas - Cliente */}
             <Route path="/" element={<PublicBooking />} />
             <Route path="/agendar" element={<PublicBooking />} />
+            
+            {/* Rotas Privadas - Agência */}
             <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/auth" element={<Auth />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            
+            {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
