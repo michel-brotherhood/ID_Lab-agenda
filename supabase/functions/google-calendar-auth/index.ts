@@ -73,11 +73,10 @@ serve(async (req) => {
       
       const { error: upsertError } = await supabase
         .from('admin_config')
-        .upsert({
-          id: '00000000-0000-0000-0000-000000000001',
-          access_token: tokens.access_token,
+        .update({
           google_calendar_refresh_token: tokens.refresh_token,
-        });
+        })
+        .eq('id', 'ba13854a-fb8a-4b3b-978b-43cabaa4398b');
 
       if (upsertError) {
         console.error('Error storing tokens:', upsertError);
