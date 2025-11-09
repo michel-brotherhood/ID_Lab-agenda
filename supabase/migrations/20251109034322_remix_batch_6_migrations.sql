@@ -1,4 +1,6 @@
 
+-- Migration: 20251108074304
+
 -- Migration: 20251108070858
 -- Create profiles table for user data
 CREATE TABLE public.profiles (
@@ -372,3 +374,90 @@ BEGIN
   RETURN NEW;
 END;
 $$;
+
+
+-- Migration: 20251108235922
+-- Remover políticas RLS antigas e criar novas sem autenticação
+DROP POLICY IF EXISTS "Admins can view all appointments" ON public.appointments;
+DROP POLICY IF EXISTS "Admins can update appointments" ON public.appointments;
+DROP POLICY IF EXISTS "Admins can delete appointments" ON public.appointments;
+DROP POLICY IF EXISTS "Users can view their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can view their own roles" ON public.user_roles;
+
+-- Desabilitar RLS nas tabelas que não precisam mais
+ALTER TABLE public.profiles DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_roles DISABLE ROW LEVEL SECURITY;
+
+-- Manter RLS na appointments apenas para separar leitura pública
+DROP POLICY IF EXISTS "Anyone can view scheduled appointments" ON public.appointments;
+DROP POLICY IF EXISTS "Anyone can create appointments" ON public.appointments;
+
+-- Novas políticas simplificadas
+CREATE POLICY "Public can create appointments"
+  ON public.appointments FOR INSERT
+  WITH CHECK (true);
+
+CREATE POLICY "Public can view scheduled appointments"
+  ON public.appointments FOR SELECT
+  USING (true);
+
+CREATE POLICY "Public can update appointments"
+  ON public.appointments FOR UPDATE
+  USING (true);
+
+CREATE POLICY "Public can delete appointments"
+  ON public.appointments FOR DELETE
+  USING (true);
+
+-- Criar tabela para configuração do admin (token secreto)
+CREATE TABLE IF NOT EXISTS public.admin_config (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  access_token TEXT NOT NULL UNIQUE,
+  google_calendar_refresh_token TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Inserir token inicial (você pode mudar depois)
+INSERT INTO public.admin_config (access_token) 
+VALUES ('idlab-admin-2024')
+ON CONFLICT (access_token) DO NOTHING;
+
+-- Desabilitar RLS na config
+ALTER TABLE public.admin_config DISABLE ROW LEVEL SECURITY;
+
+-- Migration: 20251109001244
+-- Add column to store Google Calendar event ID
+ALTER TABLE public.appointments 
+ADD COLUMN google_calendar_event_id TEXT;
+
+-- Add index for faster lookups
+CREATE INDEX idx_appointments_calendar_event_id 
+ON public.appointments(google_calendar_event_id) 
+WHERE google_calendar_event_id IS NOT NULL;
+
+-- Migration: 20251109002942
+-- Adicionar coluna para armazenar o ID do calendário específico
+ALTER TABLE public.admin_config 
+ADD COLUMN IF NOT EXISTS google_calendar_id TEXT DEFAULT 'primary';
+
+-- Migration: 20251109004106
+-- Tornar user_id nullable na tabela appointments (agendamentos públicos)
+ALTER TABLE public.appointments 
+ALTER COLUMN user_id DROP NOT NULL;
+
+-- Atualizar registros existentes com user_id inválido
+UPDATE public.appointments 
+SET user_id = NULL 
+WHERE user_id = '00000000-0000-0000-0000-000000000000';
+
+-- Migration: 20251109030032
+-- Add admin_token column to admin_config
+ALTER TABLE admin_config ADD COLUMN IF NOT EXISTS admin_token TEXT;
+
+-- Set the admin token
+UPDATE admin_config 
+SET admin_token = 'idlab-admin-2025'
+WHERE id = 'ba13854a-fb8a-4b3b-978b-43cabaa4398b';

@@ -14,150 +14,16 @@ export type Database = {
   }
   public: {
     Tables: {
-      admin_config: {
-        Row: {
-          access_token: string
-          admin_token: string | null
-          created_at: string
-          google_calendar_id: string | null
-          google_calendar_refresh_token: string | null
-          id: string
-          updated_at: string
-        }
-        Insert: {
-          access_token: string
-          admin_token?: string | null
-          created_at?: string
-          google_calendar_id?: string | null
-          google_calendar_refresh_token?: string | null
-          id?: string
-          updated_at?: string
-        }
-        Update: {
-          access_token?: string
-          admin_token?: string | null
-          created_at?: string
-          google_calendar_id?: string | null
-          google_calendar_refresh_token?: string | null
-          id?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      appointments: {
-        Row: {
-          appointment_date: string
-          appointment_time: string
-          client_company: string | null
-          client_email: string
-          client_name: string
-          client_phone: string | null
-          created_at: string
-          google_calendar_event_id: string | null
-          id: string
-          notes: string | null
-          service_type: string
-          status: string
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          appointment_date: string
-          appointment_time: string
-          client_company?: string | null
-          client_email?: string
-          client_name?: string
-          client_phone?: string | null
-          created_at?: string
-          google_calendar_event_id?: string | null
-          id?: string
-          notes?: string | null
-          service_type: string
-          status?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          appointment_date?: string
-          appointment_time?: string
-          client_company?: string | null
-          client_email?: string
-          client_name?: string
-          client_phone?: string | null
-          created_at?: string
-          google_calendar_event_id?: string | null
-          id?: string
-          notes?: string | null
-          service_type?: string
-          status?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          company: string | null
-          created_at: string
-          email: string
-          id: string
-          name: string
-          updated_at: string
-        }
-        Insert: {
-          company?: string | null
-          created_at?: string
-          email: string
-          id: string
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          company?: string | null
-          created_at?: string
-          email?: string
-          id?: string
-          name?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          created_at: string | null
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "client"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -284,8 +150,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "client"],
-    },
+    Enums: {},
   },
 } as const
