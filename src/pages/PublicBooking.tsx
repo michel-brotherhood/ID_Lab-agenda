@@ -106,7 +106,7 @@ export default function PublicBooking() {
           client_phone: null,
           client_company: selectedClient,
           status: 'scheduled',
-          user_id: '00000000-0000-0000-0000-000000000000'
+          user_id: null
         })
         .select()
         .single();

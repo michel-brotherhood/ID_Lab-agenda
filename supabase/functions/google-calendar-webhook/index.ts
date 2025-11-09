@@ -119,7 +119,7 @@ async function syncFromGoogleCalendar(accessToken: string, supabase: any, calend
         appointment_time: appointmentTime,
         google_calendar_event_id: eventId,
         status: 'scheduled',
-        user_id: '00000000-0000-0000-0000-000000000000', // User padrão para eventos sincronizados
+        user_id: null, // User padrão para eventos sincronizados
       });
 
     if (error) {
