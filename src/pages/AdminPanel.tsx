@@ -45,6 +45,8 @@ export default function AdminPanel() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [validToken, setValidToken] = useState(false);
+  const [isConnectedToGoogle, setIsConnectedToGoogle] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   useEffect(() => {
     verifyToken();
@@ -53,8 +55,18 @@ export default function AdminPanel() {
   useEffect(() => {
     if (validToken) {
       fetchAppointments();
+      checkGoogleConnection();
     }
-  }, [validToken]);
+
+    // Check if just connected
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('connected') === 'true') {
+      setIsConnectedToGoogle(true);
+      toast.success('Conectado ao Google Calendar com sucesso!');
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname + '?token=' + token);
+    }
+  }, [validToken, token]);
 
   const verifyToken = async () => {
     if (!token) {
@@ -106,6 +118,18 @@ export default function AdminPanel() {
     }
   };
 
+  const checkGoogleConnection = async () => {
+    const { data, error } = await supabase
+      .from('admin_config')
+      .select('google_calendar_refresh_token')
+      .eq('id', '00000000-0000-0000-0000-000000000001')
+      .single();
+
+    if (!error && data?.google_calendar_refresh_token) {
+      setIsConnectedToGoogle(true);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     try {
       const { error } = await supabase
@@ -123,9 +147,44 @@ export default function AdminPanel() {
     }
   };
 
+  const connectToGoogleCalendar = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('google-calendar-auth', {
+        body: {},
+      });
+
+      if (error) throw error;
+
+      if (data?.authUrl) {
+        window.location.href = data.authUrl;
+      }
+    } catch (error) {
+      console.error('Error connecting to Google Calendar:', error);
+      toast.error('Erro ao conectar com Google Calendar');
+    }
+  };
+
   const syncWithGoogleCalendar = async () => {
-    toast.info('Integração com Google Calendar será implementada em breve');
-    // TODO: Implementar OAuth e sincronização
+    setIsSyncing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('sync-google-calendar', {
+        body: {},
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast.success(`${data.synced} agendamento(s) sincronizado(s) com sucesso!`);
+        if (data.failed > 0) {
+          toast.error(`${data.failed} agendamento(s) falharam na sincronização`);
+        }
+      }
+    } catch (error) {
+      console.error('Error syncing with Google Calendar:', error);
+      toast.error('Erro ao sincronizar com Google Calendar');
+    } finally {
+      setIsSyncing(false);
+    }
   };
 
   if (loading) {
@@ -158,25 +217,37 @@ export default function AdminPanel() {
       {/* Header */}
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
-                <CalendarIcon className="w-5 h-5 text-primary-foreground" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
+                  <CalendarIcon className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold">IDLAB - Painel da Agência</h1>
+                  <p className="text-sm text-muted-foreground">Gerenciar Captações</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold">IDLAB - Painel da Agência</h1>
-                <p className="text-sm text-muted-foreground">Gerenciar Captações</p>
+              <div className="flex gap-2">
+                {!isConnectedToGoogle ? (
+                  <Button onClick={connectToGoogleCalendar} variant="outline" className="gap-2">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+                    </svg>
+                    Conectar Google Calendar
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={syncWithGoogleCalendar} 
+                    disabled={isSyncing}
+                    variant="outline"
+                    className="gap-2"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    {isSyncing ? 'Sincronizando...' : 'Sincronizar Google Calendar'}
+                  </Button>
+                )}
               </div>
             </div>
-            <Button
-              variant="outline"
-              onClick={syncWithGoogleCalendar}
-              className="gap-2"
-            >
-              <ExternalLink className="w-4 h-4" />
-              Sincronizar Google Calendar
-            </Button>
-          </div>
         </div>
       </header>
 

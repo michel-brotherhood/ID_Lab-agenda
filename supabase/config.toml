@@ -1,1 +1,7 @@
 project_id = "pzrfjartgcurrjfnqflr"
+
+[functions.google-calendar-auth]
+verify_jwt = false
+
+[functions.sync-google-calendar]
+verify_jwt = false
