@@ -31,9 +31,9 @@ async function refreshAccessToken(refreshToken: string): Promise<string> {
   return data.access_token;
 }
 
-async function deleteCalendarEvent(accessToken: string, eventId: string) {
+async function deleteCalendarEvent(accessToken: string, eventId: string, calendarId: string = 'primary') {
   const response = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`,
+    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${eventId}`,
     {
       method: 'DELETE',
       headers: {
@@ -88,7 +88,7 @@ serve(async (req) => {
     // Get admin config with tokens
     const { data: config, error: configError } = await supabase
       .from('admin_config')
-      .select('access_token, google_calendar_refresh_token')
+      .select('access_token, google_calendar_refresh_token, google_calendar_id')
       .eq('id', '00000000-0000-0000-0000-000000000001')
       .single();
 
@@ -115,7 +115,8 @@ serve(async (req) => {
       .eq('id', '00000000-0000-0000-0000-000000000001');
 
     // Delete calendar event
-    await deleteCalendarEvent(accessToken, appointment.google_calendar_event_id);
+    const calendarId = config.google_calendar_id || 'primary';
+    await deleteCalendarEvent(accessToken, appointment.google_calendar_event_id, calendarId);
     console.log('Calendar event deleted:', appointment.google_calendar_event_id);
 
     return new Response(

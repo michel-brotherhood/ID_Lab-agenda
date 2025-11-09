@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           access_token: string
           created_at: string
+          google_calendar_id: string | null
           google_calendar_refresh_token: string | null
           id: string
           updated_at: string
@@ -25,6 +26,7 @@ export type Database = {
         Insert: {
           access_token: string
           created_at?: string
+          google_calendar_id?: string | null
           google_calendar_refresh_token?: string | null
           id?: string
           updated_at?: string
@@ -32,6 +34,7 @@ export type Database = {
         Update: {
           access_token?: string
           created_at?: string
+          google_calendar_id?: string | null
           google_calendar_refresh_token?: string | null
           id?: string
           updated_at?: string

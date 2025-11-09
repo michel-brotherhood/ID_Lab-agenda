@@ -31,13 +31,13 @@ async function refreshAccessToken(refreshToken: string): Promise<string> {
   return data.access_token;
 }
 
-async function syncFromGoogleCalendar(accessToken: string, supabase: any) {
+async function syncFromGoogleCalendar(accessToken: string, supabase: any, calendarId: string = 'primary') {
   const now = new Date();
   const timeMin = now.toISOString();
   
   // Buscar eventos futuros do Google Calendar
   const response = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&orderBy=startTime&singleEvents=true`,
+    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?timeMin=${timeMin}&orderBy=startTime&singleEvents=true`,
     {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -159,7 +159,7 @@ serve(async (req) => {
     // Buscar config do admin com tokens
     const { data: config, error: configError } = await supabase
       .from('admin_config')
-      .select('access_token, google_calendar_refresh_token')
+      .select('access_token, google_calendar_refresh_token, google_calendar_id')
       .eq('id', '00000000-0000-0000-0000-000000000001')
       .single();
 
@@ -176,7 +176,8 @@ serve(async (req) => {
       .eq('id', '00000000-0000-0000-0000-000000000001');
 
     // Sincronizar eventos do Google Calendar para o banco
-    await syncFromGoogleCalendar(accessToken, supabase);
+    const calendarId = config.google_calendar_id || 'primary';
+    await syncFromGoogleCalendar(accessToken, supabase, calendarId);
 
     return new Response(
       JSON.stringify({ success: true, message: 'Sync completed' }),

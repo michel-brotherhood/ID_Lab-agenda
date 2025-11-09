@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PublicBooking from "./pages/PublicBooking";
 import AdminPanel from "./pages/AdminPanel";
+import CalendarSettings from "./pages/CalendarSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           
           {/* Rota da Agência - Protegida por Token */}
           <Route path="/agencia/:token" element={<AdminPanel />} />
+          <Route path="/agencia/:token/configuracoes" element={<CalendarSettings />} />
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

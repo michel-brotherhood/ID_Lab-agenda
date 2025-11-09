@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { Calendar as CalendarIcon, Trash2, User, Building, Mail, Phone, Clock, ExternalLink } from 'lucide-react';
+import { Calendar as CalendarIcon, Trash2, User, Building, Mail, Phone, Clock, ExternalLink, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -244,15 +244,24 @@ export default function AdminPanel() {
                     Conectar Google Calendar
                   </Button>
                 ) : (
-                  <Button 
-                    onClick={syncWithGoogleCalendar} 
-                    disabled={isSyncing}
-                    variant="outline"
-                    className="gap-2"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    {isSyncing ? 'Sincronizando...' : 'Sincronizar Google Calendar'}
-                  </Button>
+                  <>
+                    <Button 
+                      onClick={syncWithGoogleCalendar} 
+                      disabled={isSyncing}
+                      variant="outline"
+                      className="gap-2"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      {isSyncing ? 'Sincronizando...' : 'Sincronizar'}
+                    </Button>
+                    <Button 
+                      onClick={() => window.location.href = `/agencia/${token}/configuracoes`}
+                      variant="ghost"
+                      size="icon"
+                    >
+                      <Settings className="w-4 h-4" />
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
