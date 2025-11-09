@@ -179,18 +179,14 @@ export default function AdminPanel() {
   const syncWithGoogleCalendar = async () => {
     setIsSyncing(true);
     try {
-      const { data, error } = await supabase.functions.invoke('sync-google-calendar', {
+      const { data, error } = await supabase.functions.invoke('google-calendar-webhook', {
         body: {},
       });
 
       if (error) throw error;
 
-      if (data?.success) {
-        toast.success(`${data.synced} agendamento(s) sincronizado(s) com sucesso!`);
-        if (data.failed > 0) {
-          toast.error(`${data.failed} agendamento(s) falharam na sincronização`);
-        }
-      }
+      toast.success('Agendamentos sincronizados com sucesso!');
+      fetchAppointments();
     } catch (error) {
       console.error('Error syncing with Google Calendar:', error);
       toast.error('Erro ao sincronizar com Google Calendar');

@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.delete-calendar-event]
 verify_jwt = false
+
+[functions.google-calendar-webhook]
+verify_jwt = false
