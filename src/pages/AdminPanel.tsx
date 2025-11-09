@@ -62,9 +62,9 @@ export default function AdminPanel() {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('connected') === 'true') {
       setIsConnectedToGoogle(true);
-      toast.success('Conectado ao Google Calendar com sucesso!');
+      toast.success('Google Calendar conectado com sucesso! 🎉');
       // Clean up URL
-      window.history.replaceState({}, '', window.location.pathname + '?token=' + token);
+      window.history.replaceState({}, '', window.location.pathname);
     }
   }, [validToken, token]);
 
@@ -231,7 +231,17 @@ export default function AdminPanel() {
                   <CalendarIcon className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold">IDLAB - Painel da Agência</h1>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-xl font-bold">IDLAB - Painel da Agência</h1>
+                    {isConnectedToGoogle && (
+                      <Badge variant="default" className="gap-1">
+                        <svg className="w-3 h-3" viewBox="0 0 24 24">
+                          <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+                        </svg>
+                        Conectado
+                      </Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground">Gerenciar Captações</p>
                 </div>
               </div>
