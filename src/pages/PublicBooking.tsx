@@ -37,8 +37,8 @@ const AVAILABLE_TIMES = [
 
 const SERVICE_TYPES = [
   { value: 'video', label: 'Captação de Vídeo' },
-  { value: 'foto', label: 'Captação de Fotografia' },
-  { value: 'ambos', label: 'Vídeo + Fotografia' }
+  { value: 'photo', label: 'Captação de Fotografia' },
+  { value: 'both', label: 'Vídeo + Fotografia' }
 ];
 
 export default function PublicBooking() {

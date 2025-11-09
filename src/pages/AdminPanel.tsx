@@ -35,8 +35,8 @@ interface Appointment {
 
 const SERVICE_TYPES = {
   video: 'Captação de Vídeo',
-  foto: 'Captação de Fotografia',
-  ambos: 'Vídeo + Fotografia'
+  photo: 'Captação de Fotografia',
+  both: 'Vídeo + Fotografia'
 };
 
 export default function AdminPanel() {

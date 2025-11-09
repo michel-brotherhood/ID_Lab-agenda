@@ -95,7 +95,15 @@ async function syncFromGoogleCalendar(accessToken: string, supabase: any, calend
     const clientEmail = emailMatch?.[1] || 'email@exemplo.com';
     const clientPhone = phoneMatch?.[1]?.replace('N/A', null);
     const clientCompany = companyMatch?.[1]?.replace('N/A', null);
-    const serviceType = serviceMatch?.[1] || 'foto_video';
+    
+    // Mapear texto do serviço para código do banco
+    const serviceText = serviceMatch?.[1] || '';
+    const serviceTypeMap: Record<string, string> = {
+      'Captação de Vídeo': 'video',
+      'Captação de Fotografia': 'photo',
+      'Vídeo + Fotografia': 'both'
+    };
+    const serviceType = serviceTypeMap[serviceText] || 'video';
     const clientName = event.summary.replace('Captação - ', '');
 
     // Inserir novo agendamento

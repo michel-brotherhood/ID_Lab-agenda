@@ -36,13 +36,19 @@ async function createCalendarEvent(accessToken: string, appointment: any, calend
   const endTime = new Date(`${startDateTime}`);
   endTime.setHours(endTime.getHours() + 1);
 
+  const serviceTypeLabels: Record<string, string> = {
+    video: 'Captação de Vídeo',
+    photo: 'Captação de Fotografia',
+    both: 'Vídeo + Fotografia'
+  };
+
   const event = {
     summary: `Captação - ${appointment.client_name}`,
     description: `
 Empresa: ${appointment.client_company || 'N/A'}
 Email: ${appointment.client_email}
 Telefone: ${appointment.client_phone || 'N/A'}
-Serviço: ${appointment.service_type}
+Serviço: ${serviceTypeLabels[appointment.service_type] || appointment.service_type}
 ${appointment.notes ? `\nNotas: ${appointment.notes}` : ''}
     `.trim(),
     start: {
