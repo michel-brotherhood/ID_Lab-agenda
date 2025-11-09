@@ -148,10 +148,24 @@ serve(async (req) => {
       .update({ access_token: accessToken })
       .eq('id', 'ba13854a-fb8a-4b3b-978b-43cabaa4398b');
 
-    // Create calendar event
-    const calendarId = config.google_calendar_id || 'primary';
-    const event = await createCalendarEvent(accessToken, appointment, calendarId);
-    console.log('Calendar event created:', event.id);
+    // Create calendar event - try configured calendar, fallback to primary if it fails
+    let calendarId = config.google_calendar_id || 'primary';
+    let event;
+    
+    try {
+      event = await createCalendarEvent(accessToken, appointment, calendarId);
+      console.log('Calendar event created:', event.id);
+    } catch (error) {
+      // If the configured calendar fails (e.g., 404), try the primary calendar
+      if (calendarId !== 'primary') {
+        console.log(`Failed with calendar ${calendarId}, trying primary calendar...`);
+        calendarId = 'primary';
+        event = await createCalendarEvent(accessToken, appointment, calendarId);
+        console.log('Calendar event created in primary calendar:', event.id);
+      } else {
+        throw error;
+      }
+    }
 
     // Store event ID in appointment
     await supabase
