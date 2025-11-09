@@ -132,6 +132,18 @@ export default function AdminPanel() {
 
   const handleDelete = async (id: string) => {
     try {
+      // First, delete from Google Calendar
+      try {
+        await supabase.functions.invoke('delete-calendar-event', {
+          body: { appointmentId: id },
+        });
+        console.log('Calendar event deleted automatically');
+      } catch (calendarError) {
+        console.error('Failed to delete calendar event:', calendarError);
+        // Continue with appointment deletion even if calendar sync fails
+      }
+
+      // Then delete the appointment
       const { error } = await supabase
         .from('appointments')
         .delete()

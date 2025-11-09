@@ -94,7 +94,7 @@ export default function PublicBooking() {
     setLoading(true);
 
     try {
-      const { error } = await supabase
+      const { data: appointment, error } = await supabase
         .from('appointments')
         .insert({
           appointment_date: format(selectedDate, 'yyyy-MM-dd'),
@@ -107,9 +107,24 @@ export default function PublicBooking() {
           client_company: selectedClient,
           status: 'scheduled',
           user_id: '00000000-0000-0000-0000-000000000000'
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Automatically sync with Google Calendar
+      if (appointment?.id) {
+        try {
+          await supabase.functions.invoke('create-calendar-event', {
+            body: { appointmentId: appointment.id },
+          });
+          console.log('Calendar event created automatically');
+        } catch (calendarError) {
+          console.error('Failed to create calendar event:', calendarError);
+          // Don't fail the booking if calendar sync fails
+        }
+      }
 
       setBookingSuccess(true);
       toast.success('Agendamento realizado com sucesso!');
