@@ -31,7 +31,7 @@ async function refreshAccessToken(refreshToken: string): Promise<string> {
   return data.access_token;
 }
 
-async function createCalendarEvent(accessToken: string, appointment: any) {
+async function createCalendarEvent(accessToken: string, appointment: any, calendarId: string = 'primary') {
   const startDateTime = `${appointment.appointment_date}T${appointment.appointment_time}`;
   const endTime = new Date(`${startDateTime}`);
   endTime.setHours(endTime.getHours() + 1);
@@ -66,7 +66,7 @@ ${appointment.notes ? `\nNotas: ${appointment.notes}` : ''}
     event.attendees = [{ email: appointment.client_email }];
   }
 
-  const response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+  const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${accessToken}`,
@@ -94,7 +94,7 @@ serve(async (req) => {
     // Get admin config with tokens
     const { data: config, error: configError } = await supabase
       .from('admin_config')
-      .select('access_token, google_calendar_refresh_token')
+      .select('access_token, google_calendar_refresh_token, google_calendar_id')
       .eq('id', 'ba13854a-fb8a-4b3b-978b-43cabaa4398b')
       .single();
 
@@ -131,10 +131,11 @@ serve(async (req) => {
     console.log(`Found ${appointments?.length || 0} scheduled appointments`);
 
     // Sync each appointment to Google Calendar
+    const calendarId = config.google_calendar_id || 'primary';
     const results = [];
     for (const appointment of appointments || []) {
       try {
-        const event = await createCalendarEvent(accessToken, appointment);
+        const event = await createCalendarEvent(accessToken, appointment, calendarId);
         results.push({
           appointmentId: appointment.id,
           eventId: event.id,
