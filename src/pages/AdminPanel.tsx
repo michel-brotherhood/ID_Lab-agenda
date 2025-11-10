@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -42,23 +42,15 @@ const SERVICE_TYPES = {
 };
 
 export default function AdminPanel() {
-  const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [validToken, setValidToken] = useState(false);
   const [isConnectedToGoogle, setIsConnectedToGoogle] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
   useEffect(() => {
-    verifyToken();
-  }, [token]);
-
-  useEffect(() => {
-    if (validToken) {
-      fetchAppointments();
-      checkGoogleConnection();
-    }
+    fetchAppointments();
+    checkGoogleConnection();
 
     // Check if just connected
     const urlParams = new URLSearchParams(window.location.search);
@@ -68,33 +60,7 @@ export default function AdminPanel() {
       // Clean up URL
       window.history.replaceState({}, '', window.location.pathname);
     }
-  }, [validToken, token]);
-
-  const verifyToken = async () => {
-    if (!token) {
-      navigate('/');
-      return;
-    }
-
-    try {
-      const { data, error } = await sb
-        .from('admin_config')
-        .select('admin_token')
-        .eq('admin_token', token)
-        .maybeSingle();
-
-      if (error || !data) {
-        toast.error('Link de acesso inválido');
-        navigate('/');
-        return;
-      }
-
-      setValidToken(true);
-    } catch (error) {
-      console.error('Error verifying token:', error);
-      navigate('/');
-    }
-  };
+  }, []);
 
   const fetchAppointments = async () => {
     try {
@@ -208,10 +174,6 @@ export default function AdminPanel() {
     );
   }
 
-  if (!validToken) {
-    return null;
-  }
-
   // Group appointments by date
   const appointmentsByDate = appointments.reduce((acc, apt) => {
     const date = apt.appointment_date;
@@ -265,7 +227,7 @@ export default function AdminPanel() {
                       {isSyncing ? 'Sincronizando...' : 'Sincronizar'}
                     </Button>
                     <Button 
-                      onClick={() => window.location.href = `/agencia/${token}/configuracoes`}
+                      onClick={() => navigate('/agencia/configuracoes')}
                       variant="ghost"
                       size="icon"
                     >

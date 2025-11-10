@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,48 +10,14 @@ import { Calendar as CalendarIcon, ArrowLeft, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function CalendarSettings() {
-  const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [validToken, setValidToken] = useState(false);
   const [calendarId, setCalendarId] = useState('primary');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    verifyToken();
-  }, [token]);
-
-  useEffect(() => {
-    if (validToken) {
-      fetchCalendarId();
-    }
-  }, [validToken]);
-
-  const verifyToken = async () => {
-    if (!token) {
-      navigate('/');
-      return;
-    }
-
-    try {
-      const { data, error } = await sb
-        .from('admin_config')
-        .select('admin_token')
-        .eq('admin_token', token)
-        .maybeSingle();
-
-      if (error || !data) {
-        toast.error('Link de acesso inválido');
-        navigate('/');
-        return;
-      }
-
-      setValidToken(true);
-    } catch (error) {
-      console.error('Error verifying token:', error);
-      navigate('/');
-    }
-  };
+    fetchCalendarId();
+  }, []);
 
   const fetchCalendarId = async () => {
     try {
@@ -84,7 +50,7 @@ export default function CalendarSettings() {
       if (error) throw error;
 
       toast.success('Configurações salvas com sucesso!');
-      navigate(`/agencia/${token}`);
+      navigate('/agencia');
     } catch (error) {
       console.error('Error saving calendar ID:', error);
       toast.error('Erro ao salvar configurações');
@@ -104,10 +70,6 @@ export default function CalendarSettings() {
     );
   }
 
-  if (!validToken) {
-    return null;
-  }
-
   return (
     <div className="min-h-screen bg-gradient-soft">
       {/* Header */}
@@ -117,7 +79,7 @@ export default function CalendarSettings() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate(`/agencia/${token}`)}
+              onClick={() => navigate('/agencia')}
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
@@ -177,7 +139,7 @@ export default function CalendarSettings() {
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => navigate(`/agencia/${token}`)}
+                  onClick={() => navigate('/agencia')}
                 >
                   Cancelar
                 </Button>

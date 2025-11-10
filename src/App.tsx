@@ -21,9 +21,9 @@ const App = () => (
           <Route path="/" element={<PublicBooking />} />
           <Route path="/agendar" element={<PublicBooking />} />
           
-          {/* Rota da Agência - Protegida por Token */}
-          <Route path="/agencia/:token" element={<AdminPanel />} />
-          <Route path="/agencia/:token/configuracoes" element={<CalendarSettings />} />
+          {/* Rota da Agência - Interno */}
+          <Route path="/agencia" element={<AdminPanel />} />
+          <Route path="/agencia/configuracoes" element={<CalendarSettings />} />
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
