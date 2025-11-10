@@ -86,12 +86,11 @@ serve(async (req) => {
       console.log('Tokens stored successfully');
 
       // Redirect back to admin panel with success
-      // Use the deployed URL or preview URL
-      const appUrl = 'https://agenda-idlab-pro-50003.vercel.app';
+      const appUrl = 'https://id-lab-agenda.vercel.app';
       return new Response(null, {
         status: 302,
         headers: {
-          'Location': `${appUrl}/agencia/idlab-admin-2025?connected=true`,
+          'Location': `${appUrl}/agencia?connected=true`,
         },
       });
     }
