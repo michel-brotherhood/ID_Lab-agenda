@@ -165,9 +165,9 @@ export default function PublicBooking() {
   return (
     <div className="min-h-screen bg-gradient-soft">
       {/* Header */}
-      <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
+      <header className="border-b border-border/50 backdrop-blur-sm" style={{ backgroundColor: '#19191c' }}>
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center gap-3">
             <img src={idlabLogo} alt="IDLAB" className="w-16 h-16 rounded-lg object-cover" />
             <div>
               <h1 className="text-2xl font-bold text-primary">Agenda Cliente</h1>

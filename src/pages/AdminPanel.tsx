@@ -225,9 +225,9 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-gradient-soft">
       {/* Header */}
-      <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-border/50 backdrop-blur-sm sticky top-0 z-10" style={{ backgroundColor: '#19191c' }}>
         <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-center gap-4">
               <div className="flex items-center gap-3">
                 <img src={idlabLogo} alt="IDLAB" className="w-12 h-12 rounded-lg object-cover" />
                 <div>
