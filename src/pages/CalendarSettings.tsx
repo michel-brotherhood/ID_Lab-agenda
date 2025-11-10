@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
+const sb = supabase as any;
 import { Calendar as CalendarIcon, ArrowLeft, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -33,7 +34,7 @@ export default function CalendarSettings() {
     }
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from('admin_config')
         .select('admin_token')
         .eq('admin_token', token)
@@ -55,7 +56,7 @@ export default function CalendarSettings() {
   const fetchCalendarId = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from('admin_config')
         .select('google_calendar_id')
         .eq('id', 'ba13854a-fb8a-4b3b-978b-43cabaa4398b')
@@ -75,7 +76,7 @@ export default function CalendarSettings() {
   const handleSave = async () => {
     try {
       setSaving(true);
-      const { error } = await supabase
+      const { error } = await sb
         .from('admin_config')
         .update({ google_calendar_id: calendarId })
         .eq('id', 'ba13854a-fb8a-4b3b-978b-43cabaa4398b');

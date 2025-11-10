@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
+const sb = supabase as any;
 import { Calendar as CalendarIcon, Trash2, User, Building, Mail, Phone, Clock, ExternalLink, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -76,7 +77,7 @@ export default function AdminPanel() {
     }
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from('admin_config')
         .select('admin_token')
         .eq('admin_token', token)
@@ -98,7 +99,7 @@ export default function AdminPanel() {
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from('appointments')
         .select('*')
         .eq('status', 'scheduled')
@@ -120,7 +121,7 @@ export default function AdminPanel() {
   };
 
   const checkGoogleConnection = async () => {
-    const { data, error } = await supabase
+    const { data, error } = await sb
       .from('admin_config')
       .select('google_calendar_refresh_token')
       .eq('id', 'ba13854a-fb8a-4b3b-978b-43cabaa4398b')
@@ -145,7 +146,7 @@ export default function AdminPanel() {
       }
 
       // Then delete the appointment
-      const { error } = await supabase
+      const { error } = await sb
         .from('appointments')
         .delete()
         .eq('id', id);

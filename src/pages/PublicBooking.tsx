@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
+const sb = supabase as any;
 import { Calendar as CalendarIcon, Clock, User, CheckCircle2, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -63,7 +64,7 @@ export default function PublicBooking() {
 
   const fetchBookedDates = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from('appointments')
         .select('appointment_date')
         .eq('status', 'scheduled');
@@ -95,7 +96,7 @@ export default function PublicBooking() {
     setLoading(true);
 
     try {
-      const { data: appointment, error } = await supabase
+      const { data: appointment, error } = await sb
         .from('appointments')
         .insert({
           appointment_date: format(selectedDate, 'yyyy-MM-dd'),
