@@ -1,4 +1,6 @@
 
+-- Migration: 20251109034322
+
 -- Migration: 20251108074304
 
 -- Migration: 20251108070858
@@ -461,3 +463,4 @@ ALTER TABLE admin_config ADD COLUMN IF NOT EXISTS admin_token TEXT;
 UPDATE admin_config 
 SET admin_token = 'idlab-admin-2025'
 WHERE id = 'ba13854a-fb8a-4b3b-978b-43cabaa4398b';
+
