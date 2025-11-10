@@ -481,6 +481,13 @@ export default function PublicBooking() {
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-border/50 py-6 text-center" style={{ backgroundColor: '#19191c' }}>
+        <p className="text-sm text-muted-foreground">
+          © {new Date().getFullYear()} IDLAB. Todos os direitos reservados.
+        </p>
+      </footer>
     </div>
   );
 }
