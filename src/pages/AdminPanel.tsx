@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import idlabLogo from '@/assets/idlab-logo.jpg';
 
 interface Appointment {
   id: string;
@@ -227,12 +228,10 @@ export default function AdminPanel() {
         <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
-                  <CalendarIcon className="w-5 h-5 text-primary-foreground" />
-                </div>
+                <img src={idlabLogo} alt="IDLAB" className="w-12 h-12 rounded-lg object-cover" />
                 <div>
                   <div className="flex items-center gap-2">
-                    <h1 className="text-xl font-bold">IDLAB - Painel da Agência</h1>
+                    <h1 className="text-xl font-bold text-primary">Agenda ID</h1>
                     {isConnectedToGoogle && (
                       <Badge variant="default" className="gap-1">
                         <svg className="w-3 h-3" viewBox="0 0 24 24">

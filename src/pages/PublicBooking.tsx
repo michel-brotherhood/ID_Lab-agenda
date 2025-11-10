@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import idlabLogo from '@/assets/idlab-logo.jpg';
 
 const CLIENTS = [
   'Onfire American BBQ',
@@ -166,11 +167,9 @@ export default function PublicBooking() {
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-lg bg-gradient-primary flex items-center justify-center">
-              <CalendarIcon className="w-6 h-6 text-primary-foreground" />
-            </div>
+            <img src={idlabLogo} alt="IDLAB" className="w-16 h-16 rounded-lg object-cover" />
             <div>
-              <h1 className="text-2xl font-bold">IDLAB Agendamentos</h1>
+              <h1 className="text-2xl font-bold text-primary">Agenda Cliente</h1>
               <p className="text-sm text-muted-foreground">Agende sua captação de vídeo e fotografia</p>
             </div>
           </div>
